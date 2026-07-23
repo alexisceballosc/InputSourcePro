@@ -1,3 +1,13 @@
+## About this fork
+
+Adds Ghostty's quick terminal (`com.mitchellh.ghostty`) to Enhanced Mode's
+floating-app allowlist, same as iTerm2's hotkey window.
+
+Prebuilt, ad-hoc signed binary in
+[Releases](https://github.com/alexisceballosc/InputSourcePro/releases).
+
+<hr />
+
 <p align="center">
     <a href="https://inputsource.pro" target="_blank">
         <img height="200" src="https://inputsource.pro/img/app-icon.png" alt="Input Source Pro Logo">
