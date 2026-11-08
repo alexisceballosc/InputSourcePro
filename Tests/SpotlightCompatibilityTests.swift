@@ -33,6 +33,29 @@ final class SpotlightCompatibilityTests: XCTestCase {
         XCTAssertFalse(NSApplication.isFloatingApp(nil))
     }
 
+    func testCustomFloatingAppsAreRecognizedWithIterm2LikeLimits() throws {
+        let suiteName = "SpotlightCompatibilityTests.customFloatingApps"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+
+        XCTAssertFalse(NSApplication.isFloatingApp("com.example.QuickTerm", userDefaults: defaults))
+
+        defaults.set(["com.example.QuickTerm"], forKey: NSApplication.customFloatingAppIdentifiersKey)
+
+        XCTAssertTrue(NSApplication.isFloatingApp("com.example.QuickTerm", userDefaults: defaults))
+        XCTAssertTrue(NSApplication.isFloatingApp("com.example.QuickTerm", windowLayer: 3, userDefaults: defaults))
+        XCTAssertFalse(NSApplication.isFloatingApp("com.example.QuickTerm", windowLayer: 0, userDefaults: defaults))
+        XCTAssertFalse(NSApplication.isFloatingApp("com.example.QuickTerm", windowLayer: 30, userDefaults: defaults))
+        XCTAssertFalse(NSApplication.isSpotlightLikeApp("com.example.QuickTerm"))
+        XCTAssertFalse(NSApplication.isFloatingApp("com.example.Other", userDefaults: defaults))
+        XCTAssertTrue(NSApplication.isFloatingApp("com.googlecode.iterm2", userDefaults: defaults))
+    }
+
+    func testBuiltInFloatingAppLookup() {
+        XCTAssertTrue(NSApplication.isBuiltInFloatingApp("com.googlecode.iterm2"))
+        XCTAssertFalse(NSApplication.isBuiltInFloatingApp("com.example.QuickTerm"))
+    }
+
     func testCampoReusesExistingSpotlightRuleWithoutChangingItsSettings() throws {
         let rule = makeRule("com.apple.Spotlight", name: "Spotlight")
         rule.inputSourceId = "com.apple.keylayout.ABC"

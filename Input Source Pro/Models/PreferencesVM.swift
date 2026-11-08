@@ -402,6 +402,9 @@ struct Preferences {
     @UserDefault(Preferences.Key.isEnhancedModeEnabled)
     var isEnhancedModeEnabled = false
 
+    @UserDefault(NSApplication.customFloatingAppIdentifiersKey)
+    var customFloatingAppBundleIds = [String]()
+
     @UserDefault(Preferences.Key.isCJKVFixEnabled)
     var isCJKVFixEnabled = false
 

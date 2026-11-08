@@ -1,7 +1,8 @@
 ## About this fork
 
-Adds Ghostty's quick terminal (`com.mitchellh.ghostty`) to Enhanced Mode's
-floating-app allowlist, same as iTerm2's hotkey window.
+Adds a **Floating Apps** section under Settings → General → System to
+add apps with non-activating windows (e.g. Ghostty's quick terminal)
+to Enhanced Mode's floating-app list.
 
 Prebuilt, ad-hoc signed binary in
 [Releases](https://github.com/alexisceballosc/InputSourcePro/releases).

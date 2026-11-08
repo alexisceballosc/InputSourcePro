@@ -206,6 +206,8 @@ struct GeneralSettingsView: View {
                         })
                         .buttonStyle(SectionButtonStyle())
                     }
+
+                    CustomFloatingAppsSection()
                 }
 
                 SettingsSection(title: "Settings Backup") {
@@ -607,6 +609,94 @@ private struct ScriptableSettingsImportGuideView: View {
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             didCopy = false
+        }
+    }
+}
+
+private struct CustomFloatingAppsSection: View {
+    @EnvironmentObject var preferencesVM: PreferencesVM
+
+    private var bundleIds: [String] {
+        preferencesVM.preferences.customFloatingAppBundleIds
+    }
+
+    var body: some View {
+        SettingsSection(title: "Floating Apps") {
+            HStack(alignment: .firstTextBaseline) {
+                Text("Floating Apps Description".i18n())
+                    .font(.system(size: 12))
+                    .opacity(0.8)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                Spacer()
+
+                EnhancedModeRequiredBadge()
+            }
+            .padding()
+            .border(width: 1, edges: [.bottom], color: NSColor.border2.color)
+
+            ForEach(bundleIds, id: \.self) { bundleId in
+                HStack(spacing: 8) {
+                    if let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleId) {
+                        Image(nsImage: NSWorkspace.shared.icon(forFile: url.path))
+                            .resizable()
+                            .frame(width: 20, height: 20)
+
+                        Text(url.deletingPathExtension().lastPathComponent)
+                    } else {
+                        Image(systemName: "questionmark.app.dashed")
+                            .frame(width: 20, height: 20)
+                    }
+
+                    Text(bundleId)
+                        .font(.system(size: 11, design: .monospaced))
+                        .opacity(0.5)
+
+                    Spacer()
+
+                    Button("Delete".i18n()) { remove(bundleId) }
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+                .border(width: 1, edges: [.bottom], color: NSColor.border2.color)
+            }
+
+            Button(action: addApp) {
+                HStack {
+                    Text("Add".i18n() + "...")
+                    Spacer()
+                }
+            }
+            .buttonStyle(SectionButtonStyle())
+        }
+    }
+
+    private func addApp() {
+        let panel = NSOpenPanel()
+        panel.title = "Floating Apps".i18n()
+        panel.canChooseDirectories = false
+        panel.allowsMultipleSelection = true
+        panel.allowedContentTypes = [.application]
+        panel.directoryURL = URL(fileURLWithPath: "/Applications")
+
+        guard panel.runModal() == .OK else { return }
+
+        let newIds = panel.urls
+            .compactMap { Bundle(url: $0)?.bundleIdentifier }
+            .filter { !NSApplication.isBuiltInFloatingApp($0) }
+
+        preferencesVM.update {
+            var ids = $0.customFloatingAppBundleIds
+            for id in newIds where !ids.contains(id) {
+                ids.append(id)
+            }
+            $0.customFloatingAppBundleIds = ids
+        }
+    }
+
+    private func remove(_ bundleId: String) {
+        preferencesVM.update {
+            $0.customFloatingAppBundleIds.removeAll { $0 == bundleId }
         }
     }
 }

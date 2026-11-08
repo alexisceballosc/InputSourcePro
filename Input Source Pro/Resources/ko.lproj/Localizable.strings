@@ -259,3 +259,6 @@
 
 "Receive beta updates" = "베타 업데이트 받기";
 "Stable updates resume when a newer stable build is available." = "더 높은 빌드 번호의 안정 버전이 나오면 안정 버전 업데이트가 재개됩니다.";
+
+"Floating Apps" = "플로팅 앱";
+"Floating Apps Description" = "고급 모드가 기본 제공 앱 외에 추가로 감지할, 활성화되지 않는 창을 가진 앱(퀵 터미널, 단축키 창, 런처 등).";

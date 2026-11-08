@@ -2,12 +2,14 @@ import AppKit
 
 // MARK: - isFloatingApp
 
-private let floatingAppIdentifier: [(
+private typealias FloatingApp = (
     identifier: String,
     maxWindowLayer: Int,
     isSpotlightLikeApp: Bool,
     isValid: (((windowLayer: Int?, windowBounds: CGRect?)) -> Bool)?
-)] = [
+)
+
+private let floatingAppIdentifier: [FloatingApp] = [
     ("com.apple.Spotlight", 30, true, nil),
     // macOS 27 hosts Spotlight in Siri AI.
     ("com.apple.campo", 30, true, nil),
@@ -15,7 +17,6 @@ private let floatingAppIdentifier: [(
     ("at.obdev.LaunchBar", 30, true, nil),
     ("com.raycast.macos", 30, true, nil),
     ("com.googlecode.iterm2", 30, false, nil),
-    ("com.mitchellh.ghostty", 30, false, nil),
     ("com.xunyong.hapigo", 30, true, nil),
     ("com.hezongyidev.Bob", 30, false, nil),
     ("com.ripperhe.Bob", 30, false, nil),
@@ -28,21 +29,35 @@ private let floatingAppIdentifier: [(
 extension NSApplication {
     static let spotlightBundleIdentifiers = ["com.apple.Spotlight", "com.apple.campo"]
 
+    static let customFloatingAppIdentifiersKey = "customFloatingAppBundleIds"
+
     static func isSpotlightApp(_ bundleIdentifier: String?) -> Bool {
         guard let bundleIdentifier = bundleIdentifier else { return false }
         return spotlightBundleIdentifiers.contains(bundleIdentifier)
     }
 
-    static func isFloatingApp(_ bundleIdentifier: String?, windowLayer: Int? = nil, windowBounds: CGRect? = nil) -> Bool {
+    static func isFloatingApp(
+        _ bundleIdentifier: String?,
+        windowLayer: Int? = nil,
+        windowBounds: CGRect? = nil,
+        userDefaults: UserDefaults = .standard
+    ) -> Bool {
         guard let bundleIdentifier = bundleIdentifier else { return false }
 
-        return floatingAppIdentifier.contains {
+        let customApps = (userDefaults.stringArray(forKey: customFloatingAppIdentifiersKey) ?? [])
+            .map { FloatingApp(identifier: $0, maxWindowLayer: 30, isSpotlightLikeApp: false, isValid: nil) }
+
+        return (floatingAppIdentifier + customApps).contains {
             guard $0.0 == bundleIdentifier else { return false }
             guard let windowLayer = windowLayer else { return true }
             guard windowLayer < $0.1, windowLayer > 0 else { return false }
 
             return $0.isValid?((windowLayer, windowBounds)) ?? true
         }
+    }
+
+    static func isBuiltInFloatingApp(_ bundleIdentifier: String) -> Bool {
+        floatingAppIdentifier.contains { $0.identifier == bundleIdentifier }
     }
 
     static func isSpotlightLikeApp(_ bundleIdentifier: String?) -> Bool {

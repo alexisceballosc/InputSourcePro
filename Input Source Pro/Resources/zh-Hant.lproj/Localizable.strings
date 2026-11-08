@@ -261,3 +261,6 @@
 
 "Receive beta updates" = "接收測試版更新";
 "Stable updates resume when a newer stable build is available." = "當有更新的穩定版組建可用時，將恢復穩定版更新。";
+
+"Floating Apps" = "浮動應用程式";
+"Floating Apps Description" = "除內建應用程式外,增強模式還需監聽的非啟用視窗應用程式(如快速終端機、快捷鍵視窗、啟動器)。";

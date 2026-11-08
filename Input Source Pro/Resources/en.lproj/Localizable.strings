@@ -259,3 +259,6 @@
 
 "Receive beta updates" = "Receive beta updates";
 "Stable updates resume when a newer stable build is available." = "Stable updates resume when a newer stable build is available.";
+
+"Floating Apps" = "Floating Apps";
+"Floating Apps Description" = "Apps with non-activating windows (quick terminals, hotkey windows, launchers) that Enhanced Mode should watch, in addition to the built-in ones.";

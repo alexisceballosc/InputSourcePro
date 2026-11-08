@@ -259,3 +259,6 @@
 
 "Receive beta updates" = "ベータ版のアップデートを受け取る";
 "Stable updates resume when a newer stable build is available." = "より新しい安定版のビルドが公開されると、安定版の更新が再開されます。";
+
+"Floating Apps" = "フローティングアプリ";
+"Floating Apps Description" = "拡張モードで監視する、非アクティブ化ウインドウを持つアプリ(クイックターミナル、ホットキーウインドウ、ランチャーなど)。組み込みのアプリに追加されます。";
